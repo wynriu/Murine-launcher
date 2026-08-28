@@ -38,6 +38,25 @@ jobs:
         with:
           gradle-version: '9.3.1'
 
+      - name: Restore required AOSP prebuilts
+        run: |
+          mkdir -p prebuilts/libs
+          base_url="https://raw.githubusercontent.com/alesimula/old-resources-m-launcher/main/prebuilts/libs"
+          for jar in \
+            SystemUISharedLib.jar \
+            SystemUISharedLib_kotlin.jar \
+            SystemUI-shared-utils_kotlin.jar \
+            SystemUIUnfoldLib.jar \
+            SystemUIUnfoldLib_kotlin.jar \
+            contextualeducationlib.jar \
+            WindowManager-Shell-shared.jar \
+            WindowManager-Shell-shared_kotlin.jar \
+            am_flags_lib.jar \
+            PlatformAnimationLib.jar \
+            PlatformAnimationLib_kotlin.jar; do
+            curl --fail --location --retry 3 --output "prebuilts/libs/$jar" "$base_url/$jar"
+          done
+
       - name: Build Quickstep debug APK
         run: gradle --no-daemon --stacktrace assembleAospWithQuickstepDebug
 
